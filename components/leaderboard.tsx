@@ -1,8 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search } from "lucide-react"
-import { Input } from "@/components/ui/input"
 import { TradersTable } from "./traders-table"
 import type { Trader } from "@/types/trader"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -55,6 +53,7 @@ export function Leaderboard() {
       setError(null)
     } catch (err) {
       setError("Failed to load traders")
+      console.error(err)
     } finally {
       setLoading(false)
     }

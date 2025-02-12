@@ -1,15 +1,9 @@
 "use client";
 
 import {
-  ArrowUpDown,
-  Share2,
-  ChevronLeft,
-  ChevronRight,
   Search,
   CopyIcon,
-  Link2Icon,
   ExternalLink,
-  Settings2Icon,
 } from "lucide-react";
 import type { Trader } from "@/types/trader";
 import {
@@ -28,8 +22,6 @@ import {
   getPaginationRowModel,
   type SortingState,
   useReactTable,
-  Column,
-  ColumnFiltersState,
   getFilteredRowModel,
   FilterFn,
 } from "@tanstack/react-table";
@@ -68,7 +60,7 @@ export function TradersTable({
 }: TradersTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
-  const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  const fuzzyFilter: FilterFn<string> = (row, columnId, value, addMeta) => {
     // Rank the item
     const itemRank = rankItem(row.getValue(columnId), value);
 
@@ -132,10 +124,17 @@ export function TradersTable({
                     size="icon"
                     className="md:w-6 md:h-6 h-4 w-4"
                     onClick={() => {
-                      navigator.clipboard.writeText(trader.address);
-                      toast({
-                        description: "Address copied to clipboard",
+                      navigator.clipboard.writeText(trader.address)
+                      .then(() => {
+                        console.log('Text copied to clipboard: ' + trader.address);
+                        toast({
+                          description: "Address copied to clipboard",
+                        });
+                      })
+                      .catch(err => {
+                        console.error('Failed to copy text: ', err);
                       });
+                      
                     }}
                   >
                     <CopyIcon className="w-4 h-4" />
@@ -290,7 +289,7 @@ export function TradersTable({
         id: "actions",
         enableGlobalFilter: false,
         header: "Share",
-        cell: ({ row }) => {
+        cell: () => {
           return (
             <Button variant="ghost" size="icon" className="w-6 h-6">
               <ExternalLink className="h-4 w-4 text-purple-500" />
