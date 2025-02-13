@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Search,
-  CopyIcon,
-  ExternalLink,
-} from "lucide-react";
+import { Search, CopyIcon, Eye } from "lucide-react";
 import type { Trader } from "@/types/trader";
 import {
   Table,
@@ -23,7 +19,6 @@ import {
   type SortingState,
   useReactTable,
   getFilteredRowModel,
-  FilterFn,
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -34,14 +29,15 @@ import {
   formatAvgHold,
   formatMoney,
   formatSolanaAddress,
+  fuzzyFilter,
   SOL_PRICE,
 } from "@/lib/utils";
 import { Input } from "./ui/input";
-import { rankItem } from "@tanstack/match-sorter-utils";
 import { toast } from "@/hooks/use-toast";
 import { FilterModal } from "./filter-modal";
 import { FilterValues } from "./filter-form";
 import Image from "next/image";
+import { TraderModal } from "./trader-profile/trader-modal";
 
 interface TradersTableProps {
   traders: Trader[];
@@ -60,16 +56,8 @@ export function TradersTable({
 }: TradersTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
-  const fuzzyFilter: FilterFn<string> = (row, columnId, value, addMeta) => {
-    // Rank the item
-    const itemRank = rankItem(row.getValue(columnId), value);
-
-    // Store the itemRank info
-    addMeta({ itemRank });
-
-    // Return if the item should be filtered in/out
-    return itemRank.passed;
-  };
+  const [selectedTrader, setSelectedTrader] = useState<string | null>(null);
+  
 
   const activeFiltersCount = Object.values(filters).reduce(
     (count, filter) => count + (filter.min ? 1 : 0) + (filter.max ? 1 : 0),
@@ -124,17 +112,16 @@ export function TradersTable({
                     size="icon"
                     className="md:w-6 md:h-6 h-4 w-4"
                     onClick={() => {
-                      navigator.clipboard.writeText(trader.address)
-                      .then(() => {
-                        console.log('Text copied to clipboard: ' + trader.address);
-                        toast({
-                          description: "Address copied to clipboard",
+                      navigator.clipboard
+                        .writeText(trader.address)
+                        .then(() => {
+                          toast({
+                            description: "Address copied to clipboard",
+                          });
+                        })
+                        .catch((err) => {
+                          console.error("Failed to copy text: ", err);
                         });
-                      })
-                      .catch(err => {
-                        console.error('Failed to copy text: ', err);
-                      });
-                      
                     }}
                   >
                     <CopyIcon className="w-4 h-4" />
@@ -288,17 +275,22 @@ export function TradersTable({
       {
         id: "actions",
         enableGlobalFilter: false,
-        header: "Share",
-        cell: () => {
+        header: "Actions",
+        cell: ({ row }) => {
           return (
-            <Button variant="ghost" size="icon" className="w-6 h-6">
-              <ExternalLink className="h-4 w-4 text-purple-500" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-6 h-6"
+              onClick={() => setSelectedTrader(row.original.address)}
+            >
+              <Eye className="h-4 w-4 text-purple-500" />
             </Button>
           );
         },
       },
     ],
-    [formatAvgHold]
+    []
   );
 
   const table = useReactTable({
@@ -423,6 +415,11 @@ export function TradersTable({
             </Table>
           </div>
           <DataTablePagination table={table} />
+          <TraderModal 
+          open={!!selectedTrader}
+          onOpenChange={(open: boolean) => !open && setSelectedTrader(null)}
+          address={selectedTrader}
+          />
         </>
       )}
     </div>

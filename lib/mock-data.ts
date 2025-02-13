@@ -1,3 +1,4 @@
+import { Trade, TraderProfile } from "@/types/trader-profile";
 import type { Trader } from "../types/trader"
 
 
@@ -55,3 +56,98 @@ export function generateMockTraders(count: number = 30): Trader[] {
   });
 }
 
+export function generateMockTrades(count: number = 10): Trade[] {
+  return Array.from({ length: count }, () => {
+    const marketCap = Math.floor(Math.random() * 1000000) + 10000;
+    const invested = Math.floor(Math.random() * 10000) + 100;
+    const pnlValue = Math.floor(Math.random() * 50000) - 10000;
+    const pnlPercentage = (pnlValue / invested) * 100;
+    const won = Math.floor(Math.random() * 10);
+    const total = won + Math.floor(Math.random() * 10);
+    const holding = Math.floor(Math.random() * 100000);
+    const avgBuy = Math.floor(Math.random() * 1000);
+    const avgSell = avgBuy * (1 + Math.random());
+    
+    // Random time between 1 minute and 24 hours ago
+    const minutes = Math.floor(Math.random() * 1440) + 1;
+    
+    // Generate random token name
+    const tokenNames = ["BONK", "SAMO", "MEME", "PYTH", "DUST", "CROWN", "FORGE", "RAIN", "SUNNY", "ORCA"];
+    const tokenName = tokenNames[Math.floor(Math.random() * tokenNames.length)];
+    
+    // Random hold time between 1 min and 24 hours
+    const heldMinutes = Math.floor(Math.random() * 1440) + 1;
+    
+    return {
+      token: {
+        name: tokenName,
+        address: `${Array.from({ length: 8 }, () => 
+          Math.floor(Math.random() * 16).toString(16)).join('')}...${
+          Array.from({ length: 4 }, () => 
+            Math.floor(Math.random() * 16).toString(16)).join('')}`,
+        avatar: `https://api.dicebear.com/7.x/shapes/svg?seed=${tokenName}`,
+      },
+      lastTrade: `${minutes} min`,
+      marketCap,
+      invested,
+      realizedPNL: {
+        value: pnlValue,
+        percentage: Number(pnlPercentage.toFixed(1)),
+      },
+      roi: Number((pnlPercentage * 0.8).toFixed(1)), // Slightly different from PNL for variety
+      trades: {
+        won,
+        total,
+      },
+      holding,
+      avgBuy,
+      avgSell,
+      held: `${heldMinutes} min`,
+    };
+  });
+}
+
+export function generateMockProfile(): TraderProfile {
+  const won = Math.floor(Math.random() * 500) + 100;
+  const total = won + Math.floor(Math.random() * 300);
+  const winRate = Math.round((won / total) * 100);
+  
+  const totalInvested = Math.floor(Math.random() * 100000) + 10000;
+  const pnlValue = Math.floor(Math.random() * 200000) - 50000;
+  const pnlPercentage = (pnlValue / totalInvested) * 100;
+  
+  const address = `0x${Array.from({ length: 40 }, () => 
+    Math.floor(Math.random() * 16).toString(16)).join('')}`;
+  
+  const names = ["Whale", "Degen", "Alpha", "Based", "Diamond", "Moon", "Rocket", "Pepe"];
+  const name = names[Math.floor(Math.random() * names.length)];
+  
+  return {
+    name,
+    address,
+    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
+    handle: `@${name.toLowerCase()}${Math.floor(Math.random() * 9999)}`,
+    followers: Math.floor(Math.random() * 1000000) + 1000,
+    lastTrade: {
+      time: `${Math.floor(Math.random() * 60)} min ago`,
+      type: Math.random() > 0.5 ? "buy" : "sell",
+    },
+    tokens: {
+      count: Math.floor(Math.random() * 500) + 10,
+      avgPrice: Number((Math.random() * 10).toFixed(3)),
+    },
+    winRate,
+    trades: {
+      won,
+      total,
+    },
+    avgEntry: Math.floor(Math.random() * 500000) + 10000,
+    avgHold: `${Math.floor(Math.random() * 120)} m`,
+    realizedPNL: {
+      value: pnlValue,
+      percentage: Number(pnlPercentage.toFixed(1)),
+    },
+    totalInvested,
+    roi: Number((Math.random() * 1000).toFixed(1)),
+  };
+}

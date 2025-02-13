@@ -63,3 +63,24 @@ It's possible to search a trader by its name, its address and its Twitter/X hand
 
 This approach combines the benefits of persistent state management through URLs with an optimized user interface for different device sizes, creating a seamless and intuitive filtering experience.
 
+### Dual-View Trader Profile Implementation
+- **Modal View**:
+  - Quick access from the leaderboard table
+  - Provides essential trader information without leaving the context
+  - Ideal for quick lookups and comparisons
+  - Triggered by clicking the action icon in the table row
+  - Maintains user's position in the leaderboard page
+
+- **Dedicated Page View**:
+  - Full-screen experience at `/traders/[address]`
+  - Enhanced navigation and interaction capabilities
+  - Better suited for in-depth analysis
+  - Shareable direct URL for specific trader profiles
+  - Allows for future expandability (e.g., adding comments, following)
+
+This hybrid approach offers:
+- Flexibility in user navigation
+- Context-appropriate information density
+- Optimized user experience for different use cases
+- Progressive disclosure of information
+- Seamless transition between quick views and detailed analysis

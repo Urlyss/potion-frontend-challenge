@@ -17,13 +17,13 @@ export function Header() {
               
             </Link>
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/leaderboards" className=" hover:text-purple-500">
+              <Link href="/" className=" hover:text-purple-500">
                 Leaderboards
               </Link>
-              <Link href="/learn" className=" hover:text-purple-500">
+              <Link href="/" className=" hover:text-purple-500">
                 Learn
               </Link>
-              <Link href="/prizes" className=" hover:text-purple-500">
+              <Link href="/" className=" hover:text-purple-500">
                 Prizes
               </Link>
             </nav>

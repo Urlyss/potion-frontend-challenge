@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
@@ -77,16 +79,20 @@ export function FilterModal({
             <Settings2Icon />
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-auto">
           <DialogHeader>
             <DialogTitle>Filter Traders</DialogTitle>
           </DialogHeader>
           <FilterForm filters={localFilters} onChange={handleFilterChange} />
           <div className="flex justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={handleReset}>
-              Reset
-            </Button>
-            <Button onClick={handleApply}>Apply Filters</Button>
+            <DialogClose>
+              <Button variant="outline" onClick={handleReset}>
+                Reset
+              </Button>
+            </DialogClose>
+            <DialogClose>
+              <Button onClick={handleApply}>Apply Filters</Button>
+            </DialogClose>
           </div>
         </DialogContent>
       </Dialog>
@@ -104,16 +110,22 @@ export function FilterModal({
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Filter Traders</DrawerTitle>
-        </DrawerHeader>
-        <div className="mx-4">
-          <FilterForm filters={localFilters} onChange={handleFilterChange} />
-          <div className="flex justify-end gap-2 mt-4 mb-4">
-            <Button variant="outline" onClick={handleReset}>
-              Reset
-            </Button>
-            <Button onClick={handleApply}>Apply Filters</Button>
+        <div className="max-h-[80vh] overflow-auto">
+          <DrawerHeader>
+            <DrawerTitle>Filter Traders</DrawerTitle>
+          </DrawerHeader>
+          <div className="mx-4">
+            <FilterForm filters={localFilters} onChange={handleFilterChange} />
+            <div className="flex justify-end gap-2 mt-4 mb-4">
+              <DrawerClose>
+                <Button variant="outline" onClick={handleReset}>
+                  Reset
+                </Button>
+              </DrawerClose>
+              <DrawerClose>
+                <Button onClick={handleApply}>Apply Filters</Button>
+              </DrawerClose>
+            </div>
           </div>
         </div>
       </DrawerContent>

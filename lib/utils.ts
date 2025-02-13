@@ -1,3 +1,5 @@
+import { rankItem } from "@tanstack/match-sorter-utils";
+import { FilterFn } from "@tanstack/react-table";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -54,5 +56,16 @@ export function formatSolanaAddress(
   const end = address.substring(address.length - endChars);
   return `${start}${separator}${end}`;
 }
+
+export const fuzzyFilter: FilterFn<string> = (row, columnId, value, addMeta) => {
+  // Rank the item
+  const itemRank = rankItem(row.getValue(columnId), value);
+
+  // Store the itemRank info
+  addMeta({ itemRank });
+
+  // Return if the item should be filtered in/out
+  return itemRank.passed;
+};
 
 export const SOL_PRICE = 200
